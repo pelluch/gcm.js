@@ -92,7 +92,10 @@ public class GCMIntentService extends GCMBaseIntentService {
     	
     	HashMap<String, Object> messageData = new HashMap<String, Object>();
     	try {
-			Intent intent = new Intent(context, Class.forName(tiapp.getApplicationInfo().className));
+    		String className = TiApplication.getInstance().getAppProperties()
+    				.getString(GcmjsModule.PROPERTY_CLASS_NAME, "");
+    		// Log.d("gcmjs", "Application class is " + className);
+			Intent intent = new Intent(context, Class.forName(className));
 			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 			intent.addCategory(Intent.CATEGORY_LAUNCHER);
 			// Log.d("gcmjs", "onMessage: I am in background!");

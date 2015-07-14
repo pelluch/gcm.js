@@ -45,6 +45,7 @@ public class GcmjsModule extends KrollModule {
 	private static final String EVENT_PROPERTY_ERROR = "error";
 
 	public static String PROPERTY_SENDER_ID = "GCM_sender_id";
+	public static String PROPERTY_CLASS_NAME = "GCM_class_name";
 	public static final boolean DBG = org.appcelerator.kroll.common.TiConfig.LOGD;
 
 	// *************************************************************
