@@ -90,9 +90,11 @@ public class GCMIntentService extends GCMBaseIntentService {
     		GcmjsModule.logd("onMessage: module instance not found.");
     	}
     	
-    	
+    	HashMap<String, Object> messageData = new HashMap<String, Object>();
     	try {
-			Intent intent = new Intent(context, Class.forName("com.ewin.echeckit.EmbajadoresActivity"));
+			Intent intent = new Intent(context, Class.forName(tiapp.getApplicationInfo().className));
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+			intent.addCategory(Intent.CATEGORY_LAUNCHER);
 			// Log.d("gcmjs", "onMessage: I am in background!");
 	    	String title = "", message = "";
 	    	for (String key : messageIntent.getExtras().keySet()) {
@@ -101,11 +103,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 				// Log.d("gcmjs", "There is a key " + eventKey);
 				// Log.d("gcmjs", "Its value is " + messageIntent.getExtras().getString(key));
 				intent.putExtra(eventKey, value);
-				if(eventKey.equals("title")) {
-					title = value;
-				} else if(eventKey.equals("message")) {
-					message = value;
-				}
+				messageData.put(eventKey, value);
 				
 			}
 	    	
@@ -115,8 +113,8 @@ public class GCMIntentService extends GCMBaseIntentService {
 			NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
 	    	.setWhen(System.currentTimeMillis())
 	    	.setSmallIcon(context.getApplicationInfo().icon)
-	    	.setContentTitle(title)
-	    	.setContentText(message)
+	    	.setContentTitle("My notification")
+	    	.setContentText("Hello World!")
 	    	.setContentIntent(pendingIntent);
 	    	Notification notification = builder.build();
 	    	notification.flags = Notification.FLAG_AUTO_CANCEL | Notification.FLAG_SHOW_LIGHTS;
