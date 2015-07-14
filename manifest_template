@@ -13,6 +13,6 @@ copyright: Copyright (c) 2013 by iamyellow.net
 # these should not be edited
 name: gcmjs
 moduleid: net.iamyellow.gcmjs
-guid: 
+guid: 90850b67-af05-4612-9eae-30106ca0cbd7
 platform: android
-minsdk: 2.0.2.GA
+minsdk: 4.0.0.GA

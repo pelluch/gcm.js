@@ -17,16 +17,28 @@
 package net.iamyellow.gcmjs;
 
 import java.util.HashMap;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.appcelerator.titanium.TiApplication;
 
+import android.R;
+import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.google.android.gcm.GCMBaseIntentService;
 
 public class GCMIntentService extends GCMBaseIntentService {
-
+	
+	private final static AtomicInteger c = new AtomicInteger(0);
+	private final static Random generator = new Random();
+	
     public GCMIntentService () {
 		super(TiApplication.getInstance().getAppProperties().getString(GcmjsModule.PROPERTY_SENDER_ID, ""));
     }
@@ -78,12 +90,55 @@ public class GCMIntentService extends GCMBaseIntentService {
     		GcmjsModule.logd("onMessage: module instance not found.");
     	}
     	
+    	
+    	try {
+			Intent intent = new Intent(context, Class.forName("com.ewin.echeckit.EmbajadoresActivity"));
+			// Log.d("gcmjs", "onMessage: I am in background!");
+	    	String title = "", message = "";
+	    	for (String key : messageIntent.getExtras().keySet()) {
+	    		String eventKey = key.startsWith("data.") ? key.substring(5) : key;
+				String value = messageIntent.getExtras().getString(key);
+				// Log.d("gcmjs", "There is a key " + eventKey);
+				// Log.d("gcmjs", "Its value is " + messageIntent.getExtras().getString(key));
+				intent.putExtra(eventKey, value);
+				if(eventKey.equals("title")) {
+					title = value;
+				} else if(eventKey.equals("message")) {
+					message = value;
+				}
+				
+			}
+	    	
+	    	PendingIntent pendingIntent = PendingIntent.getActivity(context, generator.nextInt(), intent, 
+					PendingIntent.FLAG_UPDATE_CURRENT);
+			
+			NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+	    	.setWhen(System.currentTimeMillis())
+	    	.setSmallIcon(context.getApplicationInfo().icon)
+	    	.setContentTitle(title)
+	    	.setContentText(message)
+	    	.setContentIntent(pendingIntent);
+	    	Notification notification = builder.build();
+	    	notification.flags = Notification.FLAG_AUTO_CANCEL | Notification.FLAG_SHOW_LIGHTS;
+	    	notification.tickerText = "Ticker text";
+	    	
+	    	
+	    	NotificationManager manager = (NotificationManager)context.getSystemService(Activity.NOTIFICATION_SERVICE);
+	    	manager.notify(c.incrementAndGet(), notification);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			// Log.d("gcmjs", "Class not found");
+			e.printStackTrace();
+		}
+    	
+    	/*
 		Intent intent = new Intent(tiapp, GcmjsService.class);
         for (String key : messageIntent.getExtras().keySet()) {
 			String eventKey = key.startsWith("data.") ? key.substring(5) : key;
 			intent.putExtra(eventKey, messageIntent.getExtras().getString(key));
 		}
         tiapp.startService(intent);
+        */
     }
 
     @Override
