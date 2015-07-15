@@ -30,6 +30,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -127,11 +130,12 @@ public class GCMIntentService extends GCMBaseIntentService {
 	    			.getString("GCM_icon", "appicon")))
 	    	.setContentTitle(title)
 	    	.setContentText(message)
+	    	.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
 	    	.setContentIntent(pendingIntent);
+			
 	    	Notification notification = builder.build();
 	    	notification.flags = Notification.FLAG_AUTO_CANCEL | Notification.FLAG_SHOW_LIGHTS;
-	    	notification.tickerText = "Ticker text";
-	    	
+	    	notification.tickerText = message;	    	
 	    	
 	    	NotificationManager manager = (NotificationManager)context.getSystemService(Activity.NOTIFICATION_SERVICE);
 	    	manager.notify(c.incrementAndGet(), notification);
