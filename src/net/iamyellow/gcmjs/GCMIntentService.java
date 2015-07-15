@@ -122,6 +122,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 			NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
 	    	.setWhen(System.currentTimeMillis())
 	    	.setSmallIcon(TiRHelper.getApplicationResource(
+	    			"drawable." +
 	    			TiApplication.getInstance().getAppProperties()
 	    			.getString("GCM_icon", "appicon")))
 	    	.setContentTitle(title)
