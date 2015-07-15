@@ -21,6 +21,7 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.appcelerator.titanium.TiApplication;
+import org.appcelerator.titanium.util.TiRHelper;
 
 import android.R;
 import android.app.Activity;
@@ -107,6 +108,11 @@ public class GCMIntentService extends GCMBaseIntentService {
 				// Log.d("gcmjs", "Its value is " + messageIntent.getExtras().getString(key));
 				intent.putExtra(eventKey, value);
 				messageData.put(eventKey, value);
+				if(eventKey.equals("title")) {
+					title = value;
+				} else if(eventKey.equals("message")) {
+					message = value;
+				}
 				
 			}
 	    	
@@ -115,9 +121,11 @@ public class GCMIntentService extends GCMBaseIntentService {
 			
 			NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
 	    	.setWhen(System.currentTimeMillis())
-	    	.setSmallIcon(context.getApplicationInfo().icon)
-	    	.setContentTitle("My notification")
-	    	.setContentText("Hello World!")
+	    	.setSmallIcon(TiRHelper.getApplicationResource(
+	    			TiApplication.getInstance().getAppProperties()
+	    			.getString("GCM_icon", "appicon")))
+	    	.setContentTitle(title)
+	    	.setContentText(message)
 	    	.setContentIntent(pendingIntent);
 	    	Notification notification = builder.build();
 	    	notification.flags = Notification.FLAG_AUTO_CANCEL | Notification.FLAG_SHOW_LIGHTS;
